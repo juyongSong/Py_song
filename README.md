@@ -16,6 +16,8 @@ git clone https://github.com/juyongSong/Py_song
 
 cd Py_song
 
+chmod +x mk_getdata.sh
+
 ./mk_getdata.sh
 
 
