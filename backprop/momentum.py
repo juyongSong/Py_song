@@ -18,20 +18,28 @@ x_test,  lb_test  = mndata.load_testing()
 
 x_train, lb_train = np.array(x_train), np.array(lb_train)
 x_test,  lb_test  = np.array(x_test),  np.array(lb_test)
-print('Data loaded')
+
+#x_train = x_train/255.
+#x_test  = x_test/255.
+
+print(x_train[0,:].reshape(28,28))
+print('Data is loaded')
 
 ########### Setting the hyperparameters ###########
-learningRate = 0.3
+learningRate = 0.1
 momentum = .5
-nEpoches = 100
+nEpoches = 10
 
 nData = x_train.shape[0]
 nTest = x_test.shape[0]
-bsize = 60000
+bsize = 60000   ##### the size of mini-batch
 nBatches = nData/bsize
 
-nHid = 500
-nOut = lb_train.max()+1
+nHid = 500  #### the number of hidden variable
+nOut = lb_train.max()+1 #### the number of output variable
+
+print('learningRate, nEpoches, batchsize, # of hidden var')
+print(learningRate, nEpoches, bsize, nHid)
 
 ########### One-Hot encoding ###########
 t_train = indices_to_one_hot(lb_train,nOut)
@@ -47,6 +55,8 @@ dweight2 = np.zeros([nHid,nOut])
 
 bias1 = np.zeros([1,nHid])
 bias2 = np.zeros([1,nOut])
+
+start_timing = time.time()  #### to calculate time-consuming
 
 for epoch in range(nEpoches):
     for batch in range(nBatches):
