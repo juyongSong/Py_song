@@ -12,12 +12,18 @@ pip install python-mnist
 
 Usage :
 
-After a cloning of our git, 
-
 git clone https://github.com/juyongSong/Py_song
 
-execute file mk_getdata.sh.
+cd Py_song
 
 ./mk_getdata.sh
 
-Then, one can see the data folder in the directory one get.
+
+Then, you can execute every file in the folders.
+
+e.g.
+cd backprop
+python backprop.py
+
+
+See details in each python file.
