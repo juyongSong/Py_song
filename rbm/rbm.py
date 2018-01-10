@@ -11,7 +11,7 @@ rbm.img_merge(x_test*255,'test.png',10,10)
 
 ##########################################################
 
-for index in range(30,71,20):
+for index in range(30,51,20):
     structure = np.array([index%1000])
     nLayers = structure.shape[0]
 
