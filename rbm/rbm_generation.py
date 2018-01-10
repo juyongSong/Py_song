@@ -3,9 +3,8 @@ import rbm_functions as rbm
 from scipy.special import expit
 
 ##########################################################
-#x_train, t_train, x_test, t_test = rbm.loadMNIST()
 
-for index in range(400,401,10):
+for index in range(30,51,10):
     nHid = index%1000
     nGeneration = 100
     nCD = 20000
