@@ -31,8 +31,8 @@ for index in range(30,51,20):
     ######## Initialize the Params #######
     nVis = data.shape[1]
     nHid = structure[0]
-    print('nVis, nHid')
-    print(nVis, nHid)
+    print('nVis, nHid, CDtype')
+    print(nVis, nHid, CDtype)
     weight, visBias, hidBias = rbm.trainRBM(data, test, nVis, nHid, CDtype = CDtype, nEpoches=200)
     rbm.saveParams('params/params%d%s.pkl'%(index,CDtype),weight,visBias,hidBias)
 #    rbm.imageReconstruction(data,test,weight,visBias,hidBias,index,CDtype,0)
