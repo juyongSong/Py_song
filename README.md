@@ -1,10 +1,10 @@
 # Py_song
-basic codes of deep learning
-
+###basic codes of deep learning
+'''
 Requirement :
 
 Python 2 or 3
-
+'''
 python-mnist package
 
 pip install python-mnist
