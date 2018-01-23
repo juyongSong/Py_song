@@ -1,5 +1,5 @@
 import numpy as np
-import rbm_functions as rbm
+import dbn_functions as rbm
 from scipy.special import expit
 
 ##########################################################
