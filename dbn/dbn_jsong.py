@@ -97,7 +97,7 @@ np.savetxt(filehkhs, np.c_[Hs_Test,Hk_Test])
 ############## Generation from the random initial conditions #############
 
 nGeneration = 100
-nCD = 200
+nCD = 2000
 
 for layer in range(nLayers):
     filename = '%04d%sL%02d'%(index,CDtype,layer)
