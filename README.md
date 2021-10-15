@@ -10,26 +10,12 @@
 * pip install python-mnist
 
 
-## Usage :
+## Data :
 
-* git clone https://github.com/juyongSong/Py_song
+* Please download [MNIST](http://yann.lecun.com/exdb/mnist/) and uncompress gz files to `./data`
 
-* cd Py_song
-
-* chmod +x mk_getdata.sh
-
-* ./mk_getdata.sh
-
-
-## Explain :
-
-Then, you can execute every file in the folders.
-
-e.g.
-
-cd backprop
-
-python backprop.py
-
-
-See details in each python file.
+* for running DBN,
+```
+cd dbn
+python dbn.py 119
+```
