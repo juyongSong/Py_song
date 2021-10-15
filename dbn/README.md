@@ -1,3 +1,3 @@
 Run
 
-```dbn.py```
+```python dbn.py 119```
