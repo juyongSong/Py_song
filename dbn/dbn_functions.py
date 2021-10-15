@@ -257,7 +257,3 @@ def loadParams(filename):
     f.close()
     return weight, visBias, hidBias
 
-
-
-
-

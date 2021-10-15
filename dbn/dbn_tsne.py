@@ -72,7 +72,6 @@ plt.savefig('images/tsne_pca_mnist.png',bbox_inches='tight')
 
 for layer in range(startLayer, endLayer):
     print(layer)
-#    for l in range(layer+1):
     filename = 'params/params%04d%sL%02d.pkl'%(index,CDtype,layer)
     weight, visBias, hidBias = rbm.loadParams(filename)
     data = expit(np.dot(data,weight)+hidBias)

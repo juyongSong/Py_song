@@ -1,80 +1,110 @@
+'''
+
+Deep Belief Networks Learning and Generate samples of the models.
+
+Ones number : idx_nEpoches(0: no learning, 9: 200 Epoches, 1~8: 2^(n-1))
+Tens number : idx_structure
+First two digit : Random Seed
+
+'''
+
+import sys
 import numpy as np
 import dbn_functions as rbm
 from scipy.special import expit
 
+if len(sys.argv)!=2:
+    index = 117
+else:
+    index = int(sys.argv[1])    ###### idx of learning
 ##########################################################
 x_train, t_train, x_test, t_test = rbm.loadMNIST()
 rbm.img_merge(x_train*255,'train.png',10,10)
 rbm.img_merge(x_test*255,'test.png',10,10)
 
 ##########################################################
-#index = 30
-iter = 0
-for index in range(1,10,4):
-    print(iter)
-    i_1st = (index//10) #### tens digit
-    i_2nd = (index%10) #### ones digit
-    
-    nHid1 = 50 * (i_1st+1) #### 50 * idx1
-    nHid2 = 5 * (i_2nd+1) #### 5 * idx2
-    
-    structure = np.array([nHid1, nHid2])
-    nLayers = structure.shape[0]
 
-    CDtype = 'CD'
-    seed = index//100
-    np.random.seed(seed)
+idx_nEpoches = (index%10)
+idx_structure = (index//10)%10
+seed = index//100
 
-    print(i_1st, i_2nd, seed)
-    print(nHid1,nHid2)
-    
-    ##########################################################
-    Hs = np.zeros(nLayers)
-    Hk = np.zeros(nLayers)
-    Hs_Test = np.zeros(nLayers)
-    Hk_Test = np.zeros(nLayers)
+if idx_structure==1:
+    structure = np.array([500, 250, 120, 60, 30, 25, 20, 15, 10, 5, 3, 2])
+elif idx_structure==2:
+    structure = np.array([500, 1000, 500, 250, 120, 60, 30, 25, 20, 15, 10, 5, 3, 2])
+else :
+    structure = np.array([500, 10])
 
-    ##########################################################
-    data = x_train ##### set the data set as training set
-    test = x_test  ##### set the validation set as test set
-    index_origin = index - i_2nd
-#    if i_2nd == 0:
-#        startLayer = 0
-#    else:
-#        startLayer = 1
-    startLayer = 0
-    for layer in range(startLayer):
-        print(layer)
-        weight,visBias,hidBias = rbm.loadParams('params/params%04d%sL%d.pkl'%(index-i_2nd,CDtype,layer))
-        data = expit(np.dot(data,weight) + hidBias)
-        test = expit(np.dot(test,weight) + hidBias)
-        Hs[layer]     ,Hk[layer]      = rbm.CalHKHS(data,'result/trainMk%04d%sL%d.txt'%(index-i_2nd,CDtype,layer))
-        Hs_Test[layer],Hk_Test[layer] = rbm.CalHKHS(test,'result/testMk%04d%sL%d.txt'%(index-i_2nd,CDtype,layer))
+nLayers = structure.shape[0]
 
-    print('Starting Data is Loaded')
+if idx_nEpoches==0:
+    nEpoches = 0
+elif idx_nEpoches==9:
+    nEpoches = 200
+else:
+    nEpoches = int(2**(idx_nEpoches-1))
 
-    for layer in range(startLayer, nLayers):
-        ######## Initialize the Params #######
-        nVis = data.shape[1]
-        nHid = structure[layer]
-        print('layer, nVis, nHid')
-        print(layer, nVis, nHid)
-        weight, visBias, hidBias = rbm.trainRBM(data, test, nVis, nHid, CDtype = CDtype, nEpoches=200)
-        rbm.saveParams('params/params%04d%sL%d.pkl'%(index,CDtype,layer),weight,visBias,hidBias)
-#        rbm.imageReconstruction(data,test,weight,visBias,hidBias,index,CDtype,layer)
-        data = expit(np.dot(data,weight) + hidBias)
-        test = expit(np.dot(test,weight) + hidBias)
-        Hs[layer]     ,Hk[layer]      = rbm.CalHKHS(data,'result/trainMk%04d%sL%d.txt'%(index,CDtype,layer))
-        Hs_Test[layer],Hk_Test[layer] = rbm.CalHKHS(test,'result/testMk%04d%sL%d.txt'%(index,CDtype,layer))
+CDtype = 'PCD'
+np.random.seed(seed)
 
-    print(Hs)
-    print(Hk)
+##########################################################
+Hs = np.zeros(nLayers)
+Hk = np.zeros(nLayers)
+Hs_Test = np.zeros(nLayers)
+Hk_Test = np.zeros(nLayers)
 
-    filehkhs = 'result/HKHSTrain%04d%sL%d.txt'%(index,CDtype,layer)
-    np.savetxt(filehkhs, np.c_[Hs,Hk])
+##########################################################
+data = x_train ##### set the data set as training set
+test = x_test  ##### set the validation set as test set
+startLayer = 0
+for layer in range(startLayer):
+    filename = '%04d%sL%02d'%(index,CDtype,layer)
+    print(layer)
+    weight,visBias,hidBias = rbm.loadParams('params/params%s.pkl'%(filename))
+    data = expit(np.dot(data,weight) + hidBias)
+    test = expit(np.dot(test,weight) + hidBias)
+    Hs[layer]     ,Hk[layer]      = rbm.CalHKHS(data,'result/trainMk%s.txt'%(filename))
+    Hs_Test[layer],Hk_Test[layer] = rbm.CalHKHS(test,'result/testMk%s.txt'%(filename))
 
-    filehkhs = 'result/HKHSTest%04d%sL%d.txt'%(index,CDtype,layer)
-    np.savetxt(filehkhs, np.c_[Hs_Test,Hk_Test])
+print('Starting Data is Loaded')
 
-    iter += 1
+for layer in range(startLayer, nLayers):
+    filename = '%04d%sL%02d'%(index,CDtype,layer)
+    ######## Initialize the Params #######
+    nVis = data.shape[1]
+    nHid = structure[layer]
+    print('layer, nVis, nHid')
+    print(layer, nVis, nHid)
+    ######### Learning of each RBM #########
+    weight, visBias, hidBias = rbm.trainRBM(data, test, nHid, CDtype=CDtype,nEpoches=nEpoches,seed=seed)
+    rbm.saveParams('params/params%s.pkl'%(filename),weight,visBias,hidBias)
+    ######### update the data for the next layer #########
+    data = expit(np.dot(data,weight) + hidBias)
+    test = expit(np.dot(test,weight) + hidBias)
+    ######### Clustering Analysis with H[s] and H[k] #########
+    Hs[layer]     ,Hk[layer]      = rbm.CalHKHS(data,'result/trainMk%s.txt'%(filename))
+    Hs_Test[layer],Hk_Test[layer] = rbm.CalHKHS(test,'result/testMk%s.txt'%(filename))
+
+print(Hs)
+print(Hk)
+
+filehkhs = 'result/HKHStrain%s.txt'%(filename)
+np.savetxt(filehkhs, np.c_[Hs,Hk])
+
+filehkhs = 'result/HKHStest%s.txt'%(filename)
+np.savetxt(filehkhs, np.c_[Hs_Test,Hk_Test])
+
+############## Generation from the random initial conditions #############
+
+nGeneration = 100
+nCD = 2000
+
+for layer in range(nLayers):
+    filename = '%04d%sL%02d'%(index,CDtype,layer)
+    params_path = 'params/params%s.pkl'%(filename)
+    weight, visBias, hidBias = rbm.loadParams(params_path)
+    sample = np.random.rand(nGeneration, weight.shape[1])
+    tmpSample = rbm.generation(sample, weight, visBias, hidBias, nCD = nCD)
+    images = rbm.imageReconstruction(tmpSample,index,CDtype,layer)
+    rbm.img_merge(images*255,'images/generatedImages%s.png'%(filename),10,10)
 
